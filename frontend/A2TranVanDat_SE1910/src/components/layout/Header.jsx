@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Header() {
-  const { user, logout, theme, toggleTheme } = useAuth();
+  const { user, logout, theme, toggleTheme, isAdmin, isStaff } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -11,11 +11,17 @@ export default function Header() {
     navigate("/login");
   };
 
+  const brandPath = isAdmin
+    ? "/admin/public-news"
+    : isStaff
+      ? "/staff/public-news"
+      : "/";
+
   return (
     <header className="app-header">
       <div className="brand-wrapper">
         <Link
-          to="/"
+          to={brandPath}
           style={{
             textDecoration: "none",
             display: "flex",

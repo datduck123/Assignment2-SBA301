@@ -4,13 +4,18 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function Sidebar() {
   const { isAdmin, isStaff } = useAuth();
+  const publicNewsPath = isAdmin
+    ? "/admin/public-news"
+    : isStaff
+      ? "/staff/public-news"
+      : "/";
 
   return (
     <aside className="app-sidebar">
       <div className="sidebar-title">NAVIGATION MENU</div>
       <nav className="sidebar-nav">
         <NavLink
-          to="/"
+          to={publicNewsPath}
           className={({ isActive }) =>
             `sidebar-link ${isActive ? "active" : ""}`
           }
