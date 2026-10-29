@@ -55,6 +55,7 @@ public class GlobalExceptionHandler {
         err.put("timestamp", LocalDateTime.now());
         err.put("status", HttpStatus.BAD_REQUEST.value());
         err.put("error", "Validation Failed");
+        err.put("message", fieldErrors.values().stream().findFirst().orElse("Validation failed"));
         err.put("validationErrors", fieldErrors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }

@@ -274,6 +274,8 @@ tbody tr:hover {
   align-items: center;
   justify-content: center;
   z-index: 999;
+  padding: 20px;
+  overflow-y: auto;
 }
 
 .modal-card {
@@ -281,8 +283,12 @@ tbody tr:hover {
   border-radius: 10px;
   width: 100%;
   max-width: 540px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   padding: 24px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
 }
 
 .modal-footer {
@@ -290,6 +296,8 @@ tbody tr:hover {
   justify-content: flex-end;
   gap: 12px;
   margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
 }
 
 /* Badges */

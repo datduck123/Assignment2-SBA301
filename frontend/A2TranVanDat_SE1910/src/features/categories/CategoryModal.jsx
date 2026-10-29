@@ -10,17 +10,23 @@ export default function CategoryModal({
   onClose,
   onSave,
 }) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [parentId, setParentId] = useState("");
-  const [isActive, setIsActive] = useState(true);
+  const [name, setName] = useState(() => initialData?.name || "");
+  const [description, setDescription] = useState(
+    () => initialData?.description || "",
+  );
+  const [parentId, setParentId] = useState(() =>
+    initialData?.parentId ? String(initialData.parentId) : "",
+  );
+  const [isActive, setIsActive] = useState(
+    () => initialData?.isActive ?? true,
+  );
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (initialData && mode === "UPDATE") {
       setName(initialData.name || "");
       setDescription(initialData.description || "");
-      setParentId(initialData.parentId || "");
+      setParentId(initialData.parentId ? String(initialData.parentId) : "");
       setIsActive(initialData.isActive ?? true);
     } else {
       setName("");
@@ -50,10 +56,47 @@ export default function CategoryModal({
   };
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal-card">
-        <h3>{mode === "CREATE" ? "Add New Category" : "Edit Category"}</h3>
-        <form onSubmit={handleSubmit} style={{ marginTop: "16px" }}>
+    <div className="modal-backdrop" onClick={onClose}>
+      <div
+        className="modal-card"
+        style={{ maxWidth: "520px" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "16px",
+          }}
+        >
+          <h3 style={{ margin: 0 }}>
+            {mode === "CREATE" ? "Add New Category" : "Edit Category"}
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              background: "transparent",
+              border: "none",
+              fontSize: "18px",
+              cursor: "pointer",
+              color: "var(--text-muted)",
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          {mode === "UPDATE" && (
+            <InputField
+              label="Category ID"
+              value={initialData?.id || ""}
+              disabled
+            />
+          )}
+
           <InputField
             label="Category Name"
             value={name}
@@ -61,6 +104,7 @@ export default function CategoryModal({
             error={errors.name}
             required
           />
+
           <div className="form-group">
             <label className="form-label">Description</label>
             <textarea
@@ -68,8 +112,10 @@ export default function CategoryModal({
               className="form-control"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter category description..."
             />
           </div>
+
           <div className="form-group">
             <label className="form-label">Parent Category</label>
             <select
@@ -87,6 +133,7 @@ export default function CategoryModal({
                 ))}
             </select>
           </div>
+
           <div className="form-group">
             <label className="form-label">Status</label>
             <select

@@ -4,7 +4,7 @@ import { accountApi } from "../../api/accountApi";
 import InputField from "../../components/common/InputField";
 
 export default function StaffProfilePage() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [name, setName] = useState(user?.name || "");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -19,9 +19,13 @@ export default function StaffProfilePage() {
       await accountApi.update(user.id, {
         id: user.id,
         name: name.trim(),
+        email: user.email,
         role: user.role,
         password: password.trim() ? password : null,
       });
+      if (updateUser) {
+        updateUser({ name: name.trim() });
+      }
       setMessage({ type: "success", text: "Profile updated successfully!" });
       setPassword("");
     } catch (err) {
@@ -68,13 +72,6 @@ export default function StaffProfilePage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-          />
-          <InputField
-            label="New Password (Optional)"
-            type="password"
-            placeholder="Leave blank to keep current password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
           />
 
           <button

@@ -9,22 +9,28 @@ export default function AccountModal({
   onClose,
   onSave,
 }) {
-  const [formData, setFormData] = useState({
-    id: "",
-    name: "",
-    email: "",
-    role: 2,
-    password: "",
+  const [formData, setFormData] = useState(() => {
+    if (initialData && mode === "UPDATE") {
+      return {
+        id: initialData.accountId ?? initialData.id ?? "",
+        name: initialData.name || "",
+        email: initialData.email || "",
+        role: initialData.role ?? 2,
+        password: "",
+      };
+    }
+    return { id: "", name: "", email: "", role: 2, password: "" };
   });
+
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (initialData && mode === "UPDATE") {
       setFormData({
-        id: initialData.accountId,
-        name: initialData.name,
-        email: initialData.email,
-        role: initialData.role,
+        id: initialData.accountId ?? initialData.id ?? "",
+        name: initialData.name || "",
+        email: initialData.email || "",
+        role: initialData.role ?? 2,
         password: "",
       });
     } else {
@@ -43,14 +49,47 @@ export default function AccountModal({
       return;
     }
 
-    onSave(formData);
+    onSave({
+      ...formData,
+      id: Number(formData.id),
+      role: Number(formData.role),
+    });
   };
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal-card">
-        <h3>{mode === "CREATE" ? "Add New Account" : "Edit Account"}</h3>
-        <form onSubmit={handleSubmit} style={{ marginTop: "16px" }}>
+    <div className="modal-backdrop" onClick={onClose}>
+      <div
+        className="modal-card"
+        style={{ maxWidth: "520px" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "16px",
+          }}
+        >
+          <h3 style={{ margin: 0 }}>
+            {mode === "CREATE" ? "Add New Account" : "Edit Account"}
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              background: "transparent",
+              border: "none",
+              fontSize: "18px",
+              cursor: "pointer",
+              color: "var(--text-muted)",
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit}>
           <InputField
             label="Account ID"
             value={formData.id}

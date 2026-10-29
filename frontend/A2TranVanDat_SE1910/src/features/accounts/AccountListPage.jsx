@@ -175,15 +175,22 @@ export default function AccountListPage() {
         />
       </div>
 
-      <AccountModal
-        isOpen={modalConfig.isOpen}
-        mode={modalConfig.mode}
-        initialData={modalConfig.data}
-        onClose={() =>
-          setModalConfig({ isOpen: false, mode: "CREATE", data: null })
-        }
-        onSave={handleSave}
-      />
+      {modalConfig.isOpen && (
+        <AccountModal
+          key={
+            modalConfig.data
+              ? modalConfig.data.accountId ?? modalConfig.data.id
+              : "create"
+          }
+          isOpen={modalConfig.isOpen}
+          mode={modalConfig.mode}
+          initialData={modalConfig.data}
+          onClose={() =>
+            setModalConfig({ isOpen: false, mode: "CREATE", data: null })
+          }
+          onSave={handleSave}
+        />
+      )}
 
       <ConfirmModal
         isOpen={deleteConfig.isOpen}

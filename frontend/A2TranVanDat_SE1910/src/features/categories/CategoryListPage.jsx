@@ -165,16 +165,19 @@ export default function CategoryListPage() {
         )}
       </div>
 
-      <CategoryModal
-        isOpen={modalConfig.isOpen}
-        mode={modalConfig.mode}
-        initialData={modalConfig.data}
-        categories={categories}
-        onClose={() =>
-          setModalConfig({ isOpen: false, mode: "CREATE", data: null })
-        }
-        onSave={handleSave}
-      />
+      {modalConfig.isOpen && (
+        <CategoryModal
+          key={modalConfig.data ? modalConfig.data.id : "create"}
+          isOpen={modalConfig.isOpen}
+          mode={modalConfig.mode}
+          initialData={modalConfig.data}
+          categories={categories}
+          onClose={() =>
+            setModalConfig({ isOpen: false, mode: "CREATE", data: null })
+          }
+          onSave={handleSave}
+        />
+      )}
 
       <ConfirmModal
         isOpen={deleteConfig.isOpen}

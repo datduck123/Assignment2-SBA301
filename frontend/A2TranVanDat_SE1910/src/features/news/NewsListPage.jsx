@@ -219,18 +219,21 @@ export default function NewsListPage() {
         />
       </div>
 
-      <NewsModal
-        isOpen={modalConfig.isOpen}
-        mode={modalConfig.mode}
-        initialData={modalConfig.data}
-        categories={categories}
-        tags={tags}
-        staffId={user?.id}
-        onClose={() =>
-          setModalConfig({ isOpen: false, mode: "CREATE", data: null })
-        }
-        onSave={handleSave}
-      />
+      {modalConfig.isOpen && (
+        <NewsModal
+          key={modalConfig.data ? modalConfig.data.id : "create"}
+          isOpen={modalConfig.isOpen}
+          mode={modalConfig.mode}
+          initialData={modalConfig.data}
+          categories={categories}
+          tags={tags}
+          staffId={user?.id}
+          onClose={() =>
+            setModalConfig({ isOpen: false, mode: "CREATE", data: null })
+          }
+          onSave={handleSave}
+        />
+      )}
 
       <ConfirmModal
         isOpen={deleteConfig.isOpen}

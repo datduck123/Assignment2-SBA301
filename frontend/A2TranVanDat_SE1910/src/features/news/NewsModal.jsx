@@ -13,27 +13,50 @@ export default function NewsModal({
   onClose,
   onSave,
 }) {
-  const [formData, setFormData] = useState({
-    id: "",
-    title: "",
-    headline: "",
-    content: "",
-    source: "",
-    categoryId: "",
-    status: true,
-    tagIds: [],
+  const [formData, setFormData] = useState(() => {
+    if (initialData && mode === "UPDATE") {
+      return {
+        id: initialData.id || "",
+        title: initialData.title || "",
+        headline: initialData.headline || "",
+        content: initialData.content || "",
+        source: initialData.source || "",
+        categoryId: initialData.categoryId
+          ? String(initialData.categoryId)
+          : categories[0]?.id
+            ? String(categories[0].id)
+            : "",
+        status: initialData.status ?? true,
+        tagIds: initialData.tags?.map((t) => t.id) || [],
+      };
+    }
+    return {
+      id: "",
+      title: "",
+      headline: "",
+      content: "",
+      source: "",
+      categoryId: categories[0]?.id ? String(categories[0].id) : "",
+      status: true,
+      tagIds: [],
+    };
   });
+
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (initialData && mode === "UPDATE") {
       setFormData({
-        id: initialData.id,
+        id: initialData.id || "",
         title: initialData.title || "",
         headline: initialData.headline || "",
         content: initialData.content || "",
         source: initialData.source || "",
-        categoryId: initialData.categoryId || "",
+        categoryId: initialData.categoryId
+          ? String(initialData.categoryId)
+          : categories[0]?.id
+            ? String(categories[0].id)
+            : "",
         status: initialData.status ?? true,
         tagIds: initialData.tags?.map((t) => t.id) || [],
       });
@@ -44,13 +67,13 @@ export default function NewsModal({
         headline: "",
         content: "",
         source: "",
-        categoryId: categories[0]?.id || "",
+        categoryId: categories[0]?.id ? String(categories[0].id) : "",
         status: true,
         tagIds: [],
       });
     }
     setErrors({});
-  }, [initialData, mode, isOpen, categories]);
+  }, [initialData, mode, isOpen]);
 
   if (!isOpen) return null;
 
@@ -70,21 +93,60 @@ export default function NewsModal({
   };
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal-card" style={{ maxWidth: "640px" }}>
-        <h3>
-          {mode === "CREATE" ? "Add New News Article" : "Edit News Article"}
-        </h3>
-        <form onSubmit={handleSubmit} style={{ marginTop: "16px" }}>
-          {mode === "CREATE" && (
-            <InputField
-              label="Article ID"
-              value={formData.id}
-              onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-              error={errors.id}
-              required
-            />
-          )}
+    <div className="modal-backdrop" onClick={onClose}>
+      <div
+        className="modal-card"
+        style={{
+          maxWidth: "680px",
+          maxHeight: "85vh",
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "auto",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "16px",
+            position: "sticky",
+            top: 0,
+            background: "var(--bg-card)",
+            zIndex: 10,
+            paddingBottom: "8px",
+            borderBottom: "1px solid var(--border-color)",
+          }}
+        >
+          <h3 style={{ margin: 0, fontSize: "18px" }}>
+            {mode === "CREATE" ? "Add New News Article" : "Edit News Article"}
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              background: "transparent",
+              border: "none",
+              fontSize: "18px",
+              cursor: "pointer",
+              color: "var(--text-muted)",
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ flex: 1 }}>
+          <InputField
+            label="Article ID"
+            value={formData.id}
+            onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+            disabled={mode === "UPDATE"}
+            error={errors.id}
+            required
+          />
+
           <InputField
             label="Article Title"
             value={formData.title}
@@ -94,13 +156,17 @@ export default function NewsModal({
             error={errors.title}
             required
           />
+
           <InputField
             label="Headline"
             value={formData.headline}
             onChange={(e) =>
               setFormData({ ...formData, headline: e.target.value })
             }
+            error={errors.headline}
+            required
           />
+
           <div className="form-group">
             <label className="form-label">
               Category <span style={{ color: "#ef4444" }}>*</span>
@@ -122,29 +188,34 @@ export default function NewsModal({
               <div className="error-text">{errors.categoryId}</div>
             )}
           </div>
+
           <div className="form-group">
             <label className="form-label">
               News Content <span style={{ color: "#ef4444" }}>*</span>
             </label>
             <textarea
-              rows="5"
+              rows="6"
               className="form-control"
               value={formData.content}
               onChange={(e) =>
                 setFormData({ ...formData, content: e.target.value })
               }
+              placeholder="Enter full news article content..."
             />
             {errors.content && (
               <div className="error-text">{errors.content}</div>
             )}
           </div>
+
           <InputField
             label="News Source"
             value={formData.source}
             onChange={(e) =>
               setFormData({ ...formData, source: e.target.value })
             }
+            placeholder="e.g. CNN, Internet, Campus Office"
           />
+
           <div className="form-group">
             <label className="form-label">Associated Tags</label>
             <TagSelector
@@ -155,6 +226,7 @@ export default function NewsModal({
               }
             />
           </div>
+
           <div className="form-group">
             <label className="form-label">Publishing Status</label>
             <select
@@ -172,7 +244,15 @@ export default function NewsModal({
             </select>
           </div>
 
-          <div className="modal-footer">
+          <div
+            className="modal-footer"
+            style={{
+              position: "sticky",
+              bottom: 0,
+              background: "var(--bg-card)",
+              zIndex: 10,
+            }}
+          >
             <button
               type="button"
               className="btn btn-secondary"

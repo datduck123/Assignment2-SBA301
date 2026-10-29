@@ -14,15 +14,6 @@ export default function Sidebar() {
     <aside className="app-sidebar">
       <div className="sidebar-title">NAVIGATION MENU</div>
       <nav className="sidebar-nav">
-        <NavLink
-          to={publicNewsPath}
-          className={({ isActive }) =>
-            `sidebar-link ${isActive ? "active" : ""}`
-          }
-        >
-          📰 Public News Portal
-        </NavLink>
-
         {isAdmin && (
           <>
             <div className="sidebar-title" style={{ marginTop: "16px" }}>
@@ -34,7 +25,7 @@ export default function Sidebar() {
                 `sidebar-link ${isActive ? "active" : ""}`
               }
             >
-              👥 Account Management
+              Account Management
             </NavLink>
           </>
         )}
@@ -50,7 +41,7 @@ export default function Sidebar() {
                 `sidebar-link ${isActive ? "active" : ""}`
               }
             >
-              📁 Category Management
+              Category Management
             </NavLink>
             <NavLink
               to="/staff/news"
@@ -58,7 +49,7 @@ export default function Sidebar() {
                 `sidebar-link ${isActive ? "active" : ""}`
               }
             >
-              📝 News Articles CRUD
+              News Articles CRUD
             </NavLink>
             <NavLink
               to="/staff/history"
@@ -66,7 +57,7 @@ export default function Sidebar() {
                 `sidebar-link ${isActive ? "active" : ""}`
               }
             >
-              📜 My News History
+              My News History
             </NavLink>
             <NavLink
               to="/staff/profile"
@@ -74,7 +65,7 @@ export default function Sidebar() {
                 `sidebar-link ${isActive ? "active" : ""}`
               }
             >
-              👤 My Profile
+              My Profile
             </NavLink>
           </>
         )}
