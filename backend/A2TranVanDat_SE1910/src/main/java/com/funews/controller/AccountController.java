@@ -32,7 +32,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AccountResponse> getById(@PathVariable String id) {
+    public ResponseEntity<AccountResponse> getById(@PathVariable Short id) {
         return ResponseEntity.ok(accountService.getById(id));
     }
 
@@ -42,12 +42,12 @@ public class AccountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AccountResponse> update(@PathVariable String id, @Valid @RequestBody AccountRequest request) {
+    public ResponseEntity<AccountResponse> update(@PathVariable Short id, @Valid @RequestBody AccountRequest request) {
         return ResponseEntity.ok(accountService.updateAccount(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Short id) {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();
     }

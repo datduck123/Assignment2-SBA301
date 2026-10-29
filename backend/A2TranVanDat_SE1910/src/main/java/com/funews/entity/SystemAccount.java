@@ -13,18 +13,18 @@ import lombok.*;
 public class SystemAccount {
 
     @Id
-    @Column(name = "AccountID", length = 20)
-    private String accountId;
+    @Column(name = "AccountID")
+    private Short accountId;
 
-    @Column(name = "AccountName", length = 100, nullable = false)
+    @Column(name = "AccountName", length = 100)
     private String accountName;
 
-    @Column(name = "AccountEmail", length = 150, unique = true, nullable = false)
+    @Column(name = "AccountEmail", length = 70)
     private String accountEmail;
 
-    @Column(name = "AccountRole", nullable = false)
+    @Column(name = "AccountRole")
     private Integer accountRole; // 1 = Admin, 2 = Staff
 
-    @Column(name = "AccountPassword", length = 255, nullable = false)
+    @Column(name = "AccountPassword", length = 70)
     private String accountPassword;
 }

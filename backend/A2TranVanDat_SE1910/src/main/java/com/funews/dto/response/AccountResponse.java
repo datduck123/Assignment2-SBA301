@@ -1,7 +1,7 @@
 package com.funews.dto.response;
 
 public record AccountResponse(
-    String accountId,
+    Short accountId,
     String name,
     String email,
     Integer role

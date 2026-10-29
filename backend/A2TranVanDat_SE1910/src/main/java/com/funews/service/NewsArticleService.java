@@ -9,7 +9,7 @@ import java.util.List;
 public interface NewsArticleService {
     List<NewsArticleResponse> getPublicActiveNews();
     PageDTO<NewsArticleResponse> getAllNews(String keyword, Pageable pageable);
-    List<NewsArticleResponse> getHistoryByStaff(String staffAccountId);
+    List<NewsArticleResponse> getHistoryByStaff(Short staffAccountId);
     NewsArticleResponse getById(String id);
     NewsArticleResponse createNews(NewsArticleRequest request);
     NewsArticleResponse updateNews(String id, NewsArticleRequest request);

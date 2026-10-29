@@ -13,13 +13,12 @@ import lombok.*;
 public class Tag {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "TagID")
     private Integer tagId;
 
-    @Column(name = "TagName", length = 50, nullable = false)
+    @Column(name = "TagName", length = 50)
     private String tagName;
 
-    @Column(name = "Note", length = 255)
+    @Column(name = "Note", length = 400)
     private String note;
 }

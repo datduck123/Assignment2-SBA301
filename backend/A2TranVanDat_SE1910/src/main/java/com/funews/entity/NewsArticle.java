@@ -19,23 +19,23 @@ public class NewsArticle {
     @Column(name = "NewsArticleID", length = 20)
     private String newsArticleId;
 
-    @Column(name = "NewsTitle", length = 200, nullable = false)
+    @Column(name = "NewsTitle", length = 400)
     private String newsTitle;
 
-    @Column(name = "Headline", length = 150)
+    @Column(name = "Headline", length = 150, nullable = false)
     private String headline;
 
     @Column(name = "CreatedDate")
     private LocalDateTime createdDate;
 
-    @Column(name = "NewsContent", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "NewsContent", length = 4000)
     private String newsContent;
 
-    @Column(name = "NewsSource", length = 100)
+    @Column(name = "NewsSource", length = 400)
     private String newsSource;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CategoryID", nullable = false)
+    @JoinColumn(name = "CategoryID")
     private Category category;
 
     @Column(name = "NewsStatus")

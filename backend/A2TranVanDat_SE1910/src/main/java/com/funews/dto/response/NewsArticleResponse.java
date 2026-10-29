@@ -13,7 +13,7 @@ public record NewsArticleResponse(
     Short categoryId,
     String categoryName,
     Boolean status,
-    String createdById,
+    Short createdById,
     String createdByName,
     List<TagResponse> tags
 ) {}

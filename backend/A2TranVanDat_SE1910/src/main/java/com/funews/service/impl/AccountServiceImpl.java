@@ -41,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional(readOnly = true)
-    public AccountResponse getById(String id) {
+    public AccountResponse getById(Short id) {
         SystemAccount acc = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID: " + id));
         return mapToResponse(acc);
@@ -49,26 +49,30 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse createAccount(AccountRequest request) {
-        if (accountRepository.existsById(request.id())) {
-            throw new ConflictException("AccountID already exists: " + request.id());
+        Short accountId = request.id();
+        if (accountId == null) {
+            accountId = accountRepository.getNextAccountId();
+        } else if (accountRepository.existsById(accountId)) {
+            throw new ConflictException("AccountID already exists: " + accountId);
         }
+
         if (accountRepository.existsByAccountEmail(request.email())) {
             throw new ConflictException("AccountEmail already exists: " + request.email());
         }
 
         SystemAccount account = SystemAccount.builder()
-                .accountId(request.id())
+                .accountId(accountId)
                 .accountName(request.name())
                 .accountEmail(request.email())
                 .accountRole(request.role())
-                .accountPassword(request.password() != null ? request.password() : "@123")
+                .accountPassword(request.password() != null && !request.password().isBlank() ? request.password() : "@1")
                 .build();
 
         return mapToResponse(accountRepository.save(account));
     }
 
     @Override
-    public AccountResponse updateAccount(String id, AccountRequest request) {
+    public AccountResponse updateAccount(Short id, AccountRequest request) {
         SystemAccount account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID: " + id));
 
@@ -82,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void deleteAccount(String id) {
+    public void deleteAccount(Short id) {
         if (!accountRepository.existsById(id)) {
             throw new ResourceNotFoundException("Account not found with ID: " + id);
         }

@@ -66,7 +66,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<NewsArticleResponse> getHistoryByStaff(String staffAccountId) {
+    public List<NewsArticleResponse> getHistoryByStaff(Short staffAccountId) {
         return newsRepository.findByCreatedBy_AccountIdOrderByCreatedDateDesc(staffAccountId).stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -82,11 +82,17 @@ public class NewsArticleServiceImpl implements NewsArticleService {
 
     @Override
     public NewsArticleResponse createNews(NewsArticleRequest request) {
-        Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.categoryId()));
+        Category category = null;
+        if (request.categoryId() != null) {
+            category = categoryRepository.findById(request.categoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.categoryId()));
+        }
 
-        SystemAccount creator = accountRepository.findById(request.createdById())
-                .orElseThrow(() -> new ResourceNotFoundException("Staff account not found: " + request.createdById()));
+        SystemAccount creator = null;
+        if (request.createdById() != null) {
+            creator = accountRepository.findById(request.createdById())
+                    .orElseThrow(() -> new ResourceNotFoundException("Staff account not found: " + request.createdById()));
+        }
 
         Set<Tag> tags = new HashSet<>();
         if (request.tagIds() != null && !request.tagIds().isEmpty()) {
@@ -100,7 +106,7 @@ public class NewsArticleServiceImpl implements NewsArticleService {
                 .newsContent(request.content())
                 .newsSource(request.source())
                 .category(category)
-                .newsStatus(request.status())
+                .newsStatus(request.status() != null ? request.status() : true)
                 .createdBy(creator)
                 .createdDate(LocalDateTime.now())
                 .tags(tags)
@@ -114,15 +120,20 @@ public class NewsArticleServiceImpl implements NewsArticleService {
         NewsArticle article = newsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("News article not found with ID: " + id));
 
-        Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.categoryId()));
+        Category category = null;
+        if (request.categoryId() != null) {
+            category = categoryRepository.findById(request.categoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.categoryId()));
+        }
 
         article.setNewsTitle(request.title());
         article.setHeadline(request.headline());
         article.setNewsContent(request.content());
         article.setNewsSource(request.source());
         article.setCategory(category);
-        article.setNewsStatus(request.status());
+        if (request.status() != null) {
+            article.setNewsStatus(request.status());
+        }
         article.setModifiedDate(LocalDateTime.now());
 
         if (request.tagIds() != null) {
@@ -141,9 +152,9 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     }
 
     private NewsArticleResponse mapToResponse(NewsArticle n) {
-        List<TagResponse> tagResponses = n.getTags().stream()
+        List<TagResponse> tagResponses = (n.getTags() != null) ? n.getTags().stream()
                 .map(t -> new TagResponse(t.getTagId(), t.getTagName(), t.getNote()))
-                .toList();
+                .toList() : List.of();
 
         return new NewsArticleResponse(
                 n.getNewsArticleId(),
@@ -152,8 +163,8 @@ public class NewsArticleServiceImpl implements NewsArticleService {
                 n.getCreatedDate(),
                 n.getNewsContent(),
                 n.getNewsSource(),
-                n.getCategory().getCategoryId(),
-                n.getCategory().getCategoryName(),
+                n.getCategory() != null ? n.getCategory().getCategoryId() : null,
+                n.getCategory() != null ? n.getCategory().getCategoryName() : null,
                 n.getNewsStatus(),
                 n.getCreatedBy() != null ? n.getCreatedBy().getAccountId() : null,
                 n.getCreatedBy() != null ? n.getCreatedBy().getAccountName() : null,

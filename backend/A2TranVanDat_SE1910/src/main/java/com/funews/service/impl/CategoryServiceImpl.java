@@ -51,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category parent = request.parentId() != null ? categoryRepository.findById(request.parentId()).orElse(null) : null;
         Category category = Category.builder()
                 .categoryName(request.name())
-                .categoryDescription(request.description())
+                .categoryDescription(request.description() != null ? request.description() : "")
                 .parentCategory(parent)
                 .isActive(request.isActive() != null ? request.isActive() : true)
                 .build();
@@ -64,10 +64,13 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
 
         Category parent = request.parentId() != null ? categoryRepository.findById(request.parentId()).orElse(null) : null;
+
         category.setCategoryName(request.name());
-        category.setCategoryDescription(request.description());
+        category.setCategoryDescription(request.description() != null ? request.description() : "");
         category.setParentCategory(parent);
-        category.setIsActive(request.isActive());
+        if (request.isActive() != null) {
+            category.setIsActive(request.isActive());
+        }
 
         return mapToResponse(categoryRepository.save(category));
     }
@@ -80,15 +83,20 @@ public class CategoryServiceImpl implements CategoryService {
 
         // Constraint check from assignment requirements
         if (newsRepository.existsByCategory_CategoryId(id)) {
-            throw new ConflictException("Cannot delete category: It is currently linked to existing news articles!");
+            throw new ConflictException("Cannot delete category: This category already contains news articles!");
         }
 
         categoryRepository.deleteById(id);
     }
 
     private CategoryResponse mapToResponse(Category c) {
-        String parentName = c.getParentCategory() != null ? c.getParentCategory().getCategoryName() : null;
-        Short parentId = c.getParentCategory() != null ? c.getParentCategory().getCategoryId() : null;
-        return new CategoryResponse(c.getCategoryId(), c.getCategoryName(), c.getCategoryDescription(), parentId, parentName, c.getIsActive());
+        return new CategoryResponse(
+                c.getCategoryId(),
+                c.getCategoryName(),
+                c.getCategoryDescription(),
+                c.getParentCategory() != null ? c.getParentCategory().getCategoryId() : null,
+                c.getParentCategory() != null ? c.getParentCategory().getCategoryName() : null,
+                c.getIsActive()
+        );
     }
 }

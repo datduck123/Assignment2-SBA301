@@ -12,9 +12,9 @@ public interface NewsArticleRepository extends JpaRepository<NewsArticle, String
     Page<NewsArticle> findByNewsTitleContainingIgnoreCaseOrNewsContentContainingIgnoreCase(
             String title, String content, Pageable pageable);
 
-    List<NewsArticle> findByCreatedBy_AccountIdOrderByCreatedDateDesc(String accountId);
+    List<NewsArticle> findByCreatedBy_AccountIdOrderByCreatedDateDesc(Short accountId);
 
     // Business Constraints
     boolean existsByCategory_CategoryId(Short categoryId);
-    boolean existsByCreatedBy_AccountId(String accountId);
+    boolean existsByCreatedBy_AccountId(Short accountId);
 }

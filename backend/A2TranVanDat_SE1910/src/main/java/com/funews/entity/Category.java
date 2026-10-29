@@ -15,11 +15,12 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CategoryID")
-    private Short categoryId; //Short -> Integer
+    private Short categoryId;
+
     @Column(name = "CategoryName", length = 100, nullable = false)
     private String categoryName;
 
-    @Column(name = "CategoryDesciption", length = 255)
+    @Column(name = "CategoryDesciption", length = 250, nullable = false)
     private String categoryDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)

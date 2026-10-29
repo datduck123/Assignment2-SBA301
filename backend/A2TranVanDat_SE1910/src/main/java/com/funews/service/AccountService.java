@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface AccountService {
     PageDTO<AccountResponse> getAllAccounts(String keyword, Pageable pageable);
-    AccountResponse getById(String id);
+    AccountResponse getById(Short id);
     AccountResponse createAccount(AccountRequest request);
-    AccountResponse updateAccount(String id, AccountRequest request);
-    void deleteAccount(String id);
+    AccountResponse updateAccount(Short id, AccountRequest request);
+    void deleteAccount(Short id);
 }

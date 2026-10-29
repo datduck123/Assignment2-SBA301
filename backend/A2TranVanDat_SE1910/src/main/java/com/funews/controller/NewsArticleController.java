@@ -43,7 +43,7 @@ public class NewsArticleController {
     }
 
     @GetMapping("/history/{staffId}")
-    public ResponseEntity<List<NewsArticleResponse>> getHistoryByStaff(@PathVariable String staffId) {
+    public ResponseEntity<List<NewsArticleResponse>> getHistoryByStaff(@PathVariable Short staffId) {
         return ResponseEntity.ok(newsService.getHistoryByStaff(staffId));
     }
 

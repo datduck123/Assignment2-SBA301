@@ -8,7 +8,9 @@ public record CategoryRequest(
     @Size(max = 100, message = "CategoryName must not exceed 100 characters")
     String name,
 
+    @Size(max = 250, message = "Description must not exceed 250 characters")
     String description,
+
     Short parentId,
     Boolean isActive
 ) {}

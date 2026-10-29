@@ -30,7 +30,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagResponse createTag(TagRequest request) {
+        Integer nextId = tagRepository.getNextTagId();
         Tag tag = Tag.builder()
+                .tagId(nextId)
                 .tagName(request.name())
                 .note(request.note())
                 .build();
